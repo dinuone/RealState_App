@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -7,6 +9,13 @@ export default function SignUp() {
   const [error,setError] = useState(null)
   const [loading,setLoading] = useState(false)
   
+  const notifyError = (err) =>{
+    toast.error(err, {
+      theme: "colored",
+      position: toast.POSITION.BOTTOM_CENTER
+    });
+  }
+
   const handleChange = (event) => {
     setFormData({
       ...formData,
@@ -31,6 +40,7 @@ export default function SignUp() {
       const data = await response.json()
       if(data.success === false) {
         setError(data.message)
+        notifyError(data.message)
         setLoading(false) //set loading to false
         return
       }
@@ -42,6 +52,7 @@ export default function SignUp() {
     }catch(err){
       setLoading(false) //set
       setError(err.message)
+      notifyError(data.message)
     }
 
    
@@ -70,7 +81,7 @@ export default function SignUp() {
           <span className='text-blue-700'>Sing in</span>
         </Link>
       </div>
-      {error && <p className='text-red-500 mt-5'>{error}</p>}
+      {error &&  <ToastContainer />}
     </div>
   )
 }
