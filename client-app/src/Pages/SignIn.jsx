@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
 
 import { motion, AnimatePresence } from "framer-motion"
+import OAuth from '../compoenents/OAuth';
 
 
 export default function SignIn() {
@@ -51,7 +52,7 @@ export default function SignIn() {
       }
   
       dispatch(signInSuccess(data)) //set loading to false
-      navigate('/')
+      navigate('/') //navigate to home page
     
     }catch(err){
       dispatch(signInFailure(err.message))
@@ -76,6 +77,9 @@ export default function SignIn() {
           <button disabled={loading} className='bg-sky-950 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70'>
             {loading ? 'Loading...' : 'Sign In'}
           </button>
+          
+           {/* sign with google */}
+          <OAuth/>
         </form>
 
         <div className='flex gap-2 mt-5'>

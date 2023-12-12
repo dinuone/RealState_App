@@ -44,3 +44,46 @@ export const SignIn = async (req, res, next) => {
     next(err);
   }
 }
+
+export const GoogleAuth = async (req, res, next) => {
+  try{
+
+    const user = await User.findOne({email:req.body.email})
+
+    if(user){ //if user is already existing
+
+      const token = jwt.sign({id:user._id}, process.env.JWT_SECERET_KEY)
+      const {password: pass, ...rest } = user._doc; 
+      
+      res.cookie('access_token',token,{httpOnly:true})
+      .status(200)
+      .json(rest)
+    
+    }else{
+
+        const generatedPassword = Math.random().toString(36).slice(-8) +  Math.random().toString(36).slice(-8) 
+        const hasedPassword = bycryptjs.compareSync(generatedPassword, validUser.password);
+
+        const newusername = req.body.name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-8)
+        
+        const newUser = new User({
+          username: newusername,
+          email:req.body.email,
+          password:hasedPassword,
+          avator:req.body.photo
+        })
+
+        await newUser.save()
+
+        const token = wt.sign({id:newUser._id}, process.env.JWT_SECERET_KEY)
+        const {password: pass, ...rest } = newUser._doc; 
+
+        res.cookie('access_token',token,{httpOnly:true})
+        .status(200)
+        .json(rest)
+    }
+
+  }catch(err){
+    next(err);
+  }
+}
