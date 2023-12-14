@@ -62,7 +62,7 @@ export const GoogleAuth = async (req, res, next) => {
     }else{
 
         const generatedPassword = Math.random().toString(36).slice(-8) +  Math.random().toString(36).slice(-8) 
-        const hasedPassword = bycryptjs.compareSync(generatedPassword, validUser.password);
+        const hasedPassword = bycryptjs.hashSync(generatedPassword, 10);
 
         const newusername = req.body.name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-8)
         
@@ -70,7 +70,7 @@ export const GoogleAuth = async (req, res, next) => {
           username: newusername,
           email:req.body.email,
           password:hasedPassword,
-          avator:req.body.photo
+          avator:req.body.photo 
         })
 
         await newUser.save()

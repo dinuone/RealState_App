@@ -12,7 +12,7 @@ export default function OAuth() {
 
   const handleGoogleClick = async () =>{
     try{
-        
+
       const provider = new GoogleAuthProvider()
       const auth = getAuth(app)
 

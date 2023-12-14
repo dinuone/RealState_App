@@ -14,10 +14,12 @@ const userSlice = createSlice({
     reducers:{
 
         signInStart:(state)=>{
+            console.log('sign started');
             state.loading = true;
         },
 
         signInSuccess:(state,action)=>{
+            console.log('sign successful');
             state.currentUser = action.payload
             state.loading = false
             state.error = null
