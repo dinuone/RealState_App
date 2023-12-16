@@ -29,6 +29,10 @@ export default function Header() {
             <li className='hidden sm:inline text-slate-100 hover:underline'>About</li>
             </Link>
 
+            <Link to="/createListing">
+            {currentUser ? (<li className='hidden sm:inline text-slate-100 hover:underline'>Create Listing</li>) : ""}
+            </Link>
+
             <Link to="/profile">
             {currentUser ? (
                <img className='rounded-full h-8 w-8 object-cover' src={currentUser.avator} alt="profile_img" />
