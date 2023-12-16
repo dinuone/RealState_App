@@ -6,6 +6,8 @@ import {app} from '../firebase.js'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { motion, AnimatePresence } from "framer-motion"
+
 import { 
   updateStart,
   updateUserSuccess,
@@ -152,45 +154,47 @@ export default function Profile() {
   }
 
   return (
-    <div className='p-3 max-w-lg mx-auto'>
-      <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
-      <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-        <input type="file" ref={fileRef} hidden accept='image/*' onChange={(e) => setFile(e.target.files[0])} />
-        <img src={formData.avator || currentUser.avator} alt="" 
-        onClick={()=> fileRef.current.click()}
-        className='rounded-full h-24 w-24 object-cover cursor-pointer self-center shadow-lg'/>
+    <AnimatePresence>
+      <motion.div className='p-3 max-w-lg mx-auto' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
+        <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+          <input type="file" ref={fileRef} hidden accept='image/*' onChange={(e) => setFile(e.target.files[0])} />
+          <img src={formData.avator || currentUser.avator} alt="" 
+          onClick={()=> fileRef.current.click()}
+          className='rounded-full h-24 w-24 object-cover cursor-pointer self-center shadow-lg'/>
+          
+          <p className='text-center'>
+            { filePercentage > 0 && filePercentage < 100 ?  ( <span className='text-slate-700'>{`Uploading ${filePercentage}%`}</span>) :
+              filePercentage === 100 ? ( <span className='text-green-700'> Image successfully uploaded</span> ) : "" 
+            }
+          </p>
         
-        <p className='text-center'>
-          { filePercentage > 0 && filePercentage < 100 ?  ( <span className='text-slate-700'>{`Uploading ${filePercentage}%`}</span>) :
-            filePercentage === 100 ? ( <span className='text-green-700'> Image successfully uploaded</span> ) : "" 
-          }
-        </p>
-       
-        
-        <input type="text" placeholder='Username' id="username" className='border p-3 rounded-lg' 
-        defaultValue={currentUser.username} 
-        onChange={handleChange}
-        />
+          
+          <input type="text" placeholder='Username' id="username" className='border p-3 rounded-lg' 
+          defaultValue={currentUser.username} 
+          onChange={handleChange}
+          />
 
-        <input type="text" placeholder='email' id="email" className='border p-3 rounded-lg ' 
-        defaultValue={currentUser.email}
-        onChange={handleChange} />
+          <input type="text" placeholder='email' id="email" className='border p-3 rounded-lg ' 
+          defaultValue={currentUser.email}
+          onChange={handleChange} />
 
-        <input type="password" placeholder='password' id="password" className='border p-3 rounded-lg ' onChange={handleChange}/>
+          <input type="password" placeholder='password' id="password" className='border p-3 rounded-lg ' onChange={handleChange}/>
 
-        <button disabled={loading} className='bg-sky-950 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>
-          {loading ? 'Loading...' : 'Update'}
-        </button>
+          <button disabled={loading} className='bg-sky-950 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>
+            {loading ? 'Loading...' : 'Update'}
+          </button>
 
-        <div className='flex justify-between mt-5'>
-          <span className='text-red-700 cursor-pointer' onClick={handleDeleteUser}>Delete Account ?</span>
-          <span className='text-red-700 cursor-pointer' onClick={handleSignOut}>Sign out</span>
-        </div>
-      </form>
-        
-      {fileError  &&  <ToastContainer />}
-      {updateNotification && <ToastContainer />}
-      {error && <ToastContainer /> }
-    </div>
+          <div className='flex justify-between mt-5'>
+            <span className='text-red-700 cursor-pointer' onClick={handleDeleteUser}>Delete Account ?</span>
+            <span className='text-red-700 cursor-pointer' onClick={handleSignOut}>Sign out</span>
+          </div>
+        </form>
+          
+        {fileError  &&  <ToastContainer />}
+        {updateNotification && <ToastContainer />}
+        {error && <ToastContainer /> }
+      </motion.div>
+    </AnimatePresence>
   )
 }
