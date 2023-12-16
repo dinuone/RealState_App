@@ -268,7 +268,7 @@ export default function CreateListing() {
                             type="number" id="regularPrice" min="50" max="1000000" required />
                             <div className='flex flex-col items-center'>
                                 <p>Regular Price</p>
-                                <span className='text-xs'>($ / Month)</span>
+                                {formData.type === 'rent' && (<span className='text-xs'>($ / Month)</span>)}
                             </div> 
                         </div>
 
@@ -281,7 +281,7 @@ export default function CreateListing() {
                                 type="number" id="discountPrice" min="0" max="1000000" required />
                                 <div className='flex flex-col items-center'>
                                     <p>Discount Price</p>
-                                    <span className='text-xs'>($ / Month)</span>
+                                    {formData.type === 'rent' && (<span className='text-xs'>($ / Month)</span>)}
                                 </div> 
                             </div>
                         )}

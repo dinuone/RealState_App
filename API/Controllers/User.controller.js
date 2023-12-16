@@ -1,3 +1,4 @@
+import Listing from "../Models/Listing.model.js"
 import User from "../Models/User.model.js"
 import { errorHandler } from "../Utils/error.js"
 import bycryptjs from 'bcryptjs'
@@ -52,5 +53,20 @@ import bycryptjs from 'bcryptjs'
     }catch(err){
         next(err)
     }
+ }
+
+
+ export const getUserListings = async (req, res, next) => {
+    if(req.user.id !== req.params.id){
+        return next(errorHandler(401,'You can only get own listings'))
+    }
+
+    try{
+        const listings = await Listing.find({userRef:req.params.id})
+        res.status(200).json(listings)
+    }catch(err){
+        next(err)
+    }
+  
  }
    
