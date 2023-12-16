@@ -6,16 +6,21 @@ import {app} from '../firebase.js'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { updateStart,updateUserSuccess,updateFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice.js';
+import { useDispatch } from 'react-redux';
 
 export default function Profile() {
 
-  const {currentUser} = useSelector((state) =>state.user)
+  const {currentUser, loading, error} = useSelector((state) =>state.user)
   const fileRef = useRef(null)
   const [file,setFile] = useState(undefined)
   const [filePercentage, setFilePercentage] = useState(0)
   const [fileError, setFileError] = useState(false)
   const [formData, setFormData] = useState({})
- 
+
+  const [updateNotification, setUpdateNotification] = useState(false)
+
+  const dispatch = useDispatch()
 
   useEffect(()=>{
     if(file){
@@ -28,6 +33,14 @@ export default function Profile() {
       theme: "colored",
       position: toast.POSITION.TOP_CENTER
     });
+  }
+
+  const notifySuccess = (msg) =>{
+    toast.success(msg, {
+      theme: "colored",
+      position: toast.POSITION.TOP_CENTER
+    });
+    setUpdateNotification(true)
   }
 
   const handleFileupload = (file) =>{
@@ -57,10 +70,63 @@ export default function Profile() {
    
   }
 
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      try{
+        dispatch(updateStart())
+
+        const res = await fetch(`api/user/update/${currentUser._id}`,{
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+        if(data.success === false){
+          dispatch(updateFailure(data.message));
+          notifyError(data.message)
+          return
+        }
+
+        dispatch(updateUserSuccess(data))
+        notifySuccess("Successfully updated")
+
+      }catch(err) {
+        dispatch(updateFailure(err.message))
+      }
+
+  }
+
+
+  const handleChange = (event) => {
+    setFormData({...formData,[event.target.id]:event.target.value})
+  }
+
+  const handleDeleteUser = async (event) => {
+    try{
+        dispatch(deleteUserStart())
+
+        const res = await fetch(`/api/user/delete/${currentUser._id}`,{
+          method: 'DELETE',
+        })
+
+        const data = await res.json()
+        if(data.success === false) {
+          dispatch(deleteUserFailure(data.message))
+          return
+        }
+
+        dispatch(deleteUserSuccess(data))
+        
+    }catch(err){
+        dispatch(deleteUserFailure(err.message))
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
-      <form className='flex flex-col gap-4'>
+      <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <input type="file" ref={fileRef} hidden accept='image/*' onChange={(e) => setFile(e.target.files[0])} />
         <img src={formData.avator || currentUser.avator} alt="" 
         onClick={()=> fileRef.current.click()}
@@ -73,21 +139,30 @@ export default function Profile() {
         </p>
        
         
-        <input type="text" placeholder='Username' id="username" className='border p-3 rounded-lg ' />
+        <input type="text" placeholder='Username' id="username" className='border p-3 rounded-lg' 
+        defaultValue={currentUser.username} 
+        onChange={handleChange}
+        />
 
-        <input type="text" placeholder='email' id="email" className='border p-3 rounded-lg ' />
+        <input type="text" placeholder='email' id="email" className='border p-3 rounded-lg ' 
+        defaultValue={currentUser.email}
+        onChange={handleChange} />
 
-        <input type="text" placeholder='password' id="password" className='border p-3 rounded-lg ' />
+        <input type="password" placeholder='password' id="password" className='border p-3 rounded-lg ' onChange={handleChange}/>
 
-        <button className='bg-sky-950 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>Update</button>
+        <button disabled={loading} className='bg-sky-950 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>
+          {loading ? 'Loading...' : 'Update'}
+        </button>
 
         <div className='flex justify-between mt-5'>
-          <span className='text-red-700 cursor-pointer'>Delete Account ?</span>
+          <span className='text-red-700 cursor-pointer' onClick={handleDeleteUser}>Delete Account ?</span>
           <span className='text-red-700 cursor-pointer'>Sign out</span>
         </div>
       </form>
-
+        
       {fileError  &&  <ToastContainer />}
+      {updateNotification && <ToastContainer />}
+      {error && <ToastContainer /> }
     </div>
   )
 }
