@@ -6,7 +6,17 @@ import {app} from '../firebase.js'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { updateStart,updateUserSuccess,updateFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice.js';
+import { 
+  updateStart,
+  updateUserSuccess,
+  updateFailure, 
+  deleteUserStart, 
+  deleteUserSuccess, 
+  deleteUserFailure, 
+  signOutStart, 
+  signOutSuccess, 
+  signOutFailure } from '../redux/user/userSlice.js';
+
 import { useDispatch } from 'react-redux';
 
 export default function Profile() {
@@ -123,6 +133,24 @@ export default function Profile() {
     }
   }
 
+  const handleSignOut = async () => {
+    try{
+      dispatch(signOutStart())
+      const response = await fetch('api/auth/signout')
+      const data = await response.json()
+
+      if(data.success === false) {
+        dispatch(signOutFailure(data.message))
+        return
+      }
+
+      dispatch(signOutSuccess(data))
+
+    }catch(err){
+      dispatch(signOutFailure(err.message))
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -156,7 +184,7 @@ export default function Profile() {
 
         <div className='flex justify-between mt-5'>
           <span className='text-red-700 cursor-pointer' onClick={handleDeleteUser}>Delete Account ?</span>
-          <span className='text-red-700 cursor-pointer'>Sign out</span>
+          <span className='text-red-700 cursor-pointer' onClick={handleSignOut}>Sign out</span>
         </div>
       </form>
         
