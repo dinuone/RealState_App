@@ -34,7 +34,7 @@ export default function Header() {
             </Link>
 
             <Link to="/mylistings">
-            {currentUser ? (<li className='hidden sm:inline text-slate-100 hover:underline'>My Listing</li>) : ""}
+            {currentUser ? (<li className='hidden sm:inline text-slate-100 hover:underline'>My Listings</li>) : ""}
             </Link>
 
             <Link to="/profile">
