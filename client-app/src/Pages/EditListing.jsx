@@ -1,17 +1,18 @@
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion"
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import {app} from '../firebase.js'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
-import {  useNavigate } from 'react-router-dom'
+import {  useNavigate, useParams } from 'react-router-dom'
 
 
-export default function CreateListing() {
+export default function EditListing() {
 
   const  {currentUser} = useSelector(state => state.user)
   const navigate = useNavigate();
+  const params = useParams();
 
   const [files,setFiles] = useState([])
   const [formData, setFormData] = useState({
@@ -149,7 +150,7 @@ export default function CreateListing() {
         setLoading(true)
         setError(false)
 
-        const res = await fetch('api/listing/create',{
+        const res = await fetch(`/api/listing/update/${params.id}`,{
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -176,10 +177,31 @@ export default function CreateListing() {
     }
   }
 
+  const fetchListing = async () =>{
+    const listingID = params.id
+
+    const res = await fetch(`/api/listing/getListing/${listingID}`)
+    const data = await res.json();
+    console.log(data)
+    if(data.sucess === false){
+      return
+    }
+
+    setFormData(data)
+
+    
+  };
+
+  useEffect(() =>{
+
+    fetchListing()
+
+  },[])
+
   return (
     <AnimatePresence>
         <motion.div className='p-3 max-w-4xl mx-auto' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-        <h1 className='text-3xl font-semibold text-center my-7 text-gray-400'>Create a Listing</h1>
+        <h1 className='text-3xl font-semibold text-center my-7 text-gray-400'>Update a Listing</h1>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
                 <div className='flex flex-col gap-4 flex-1'>
                     <input 
@@ -310,7 +332,7 @@ export default function CreateListing() {
                     }
 
                     <button disabled={loading || imageUploading} className='p-3 bg-sky-950 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>
-                        { loading ? 'Creating...' : 'Create Lisitng'}
+                        { loading ? 'Creating...' : 'Update Lisitng'}
                     </button>
                 </div>
             
