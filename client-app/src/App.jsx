@@ -10,6 +10,7 @@ import PrivateRoute from './compoenents/privateRoute'
 import CreateListing from './Pages/CreateListing'
 import MyListings from './Pages/MyListings'
 import EditListing from './Pages/EditListing'
+import Listing from './Pages/Listing'
 
 
 
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/sign-in" element={<Signin />} />
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/about" element={<About/>} />
+      <Route path="/listing/:id" element={<Listing/>} />
       
       <Route element={<PrivateRoute/>} >
         <Route path="/profile" element={<Profile/>} />
