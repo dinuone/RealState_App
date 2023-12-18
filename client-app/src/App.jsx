@@ -11,6 +11,7 @@ import CreateListing from './Pages/CreateListing'
 import MyListings from './Pages/MyListings'
 import EditListing from './Pages/EditListing'
 import Listing from './Pages/Listing'
+import Search from './Pages/Search'
 
 
 
@@ -25,6 +26,7 @@ export default function App() {
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/about" element={<About/>} />
       <Route path="/listing/:id" element={<Listing/>} />
+      <Route path="/search" element={<Search/>}/>
       
       <Route element={<PrivateRoute/>} >
         <Route path="/profile" element={<Profile/>} />

@@ -114,7 +114,8 @@ export const searchListing = async (req, res, next) =>{
           .skip(startIndex);
     
         return res.status(200).json(listings);
-      } catch (error) {
+      
+    } catch (error) {
         next(error);
-      }
+    }
 }
