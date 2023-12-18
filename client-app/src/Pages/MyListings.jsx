@@ -115,7 +115,7 @@ export default function MyListings() {
                             <Typography gutterBottom variant="h5" component="div">
                                 {listing.name}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography noWrap variant="body2" color="text.secondary">
                                 {listing.description}
                             </Typography>
                         </CardContent>

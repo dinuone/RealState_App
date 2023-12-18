@@ -159,7 +159,7 @@ export default function Profile() {
         <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
         <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
           <input type="file" ref={fileRef} hidden accept='image/*' onChange={(e) => setFile(e.target.files[0])} />
-          <img src={formData.avator || currentUser.avator} alt="" 
+          <img src={formData.avator || currentUser.avator} alt="" referrerPolicy="no-referrer"
           onClick={()=> fileRef.current.click()}
           className='rounded-full h-24 w-24 object-cover cursor-pointer self-center shadow-lg'/>
           
